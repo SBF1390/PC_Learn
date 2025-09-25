@@ -6,4 +6,10 @@ from rest_framework import status
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from .models import *
+from .serializers import *
+from rest_framework import generics
 
+
+class SignUpView(generics.CreateAPIView):
+    queryset = UserBase.objects.all()
+    serializer_class = UserSerializer
