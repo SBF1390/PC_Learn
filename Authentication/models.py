@@ -1,24 +1,48 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
-
-class UserBase(AbstractBaseUser, PermissionsMixin):
-    FName = models.CharField(max_length=75)
-    LName = models.CharField(max_length=75)
-    Nc = models.CharField(max_length=11, unique=True,)
-
-    USERNAME_FIELD = 'Nc'
-    REQUIRED_FIELDS = ['FName','LName']
+from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, Nc, password=None, **extra_fields):
-        user = self.model(Nc=Nc, **extra_fields)
+    def create_user(self, UserName, password=None, **extra_fields):
+        user = self.model(UserName=UserName, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, Nc, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(Nc, password, **extra_fields)
+    def create_superuser(self, UserName, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self.create_user(UserName, password, **extra_fields)
+
+
+class UserBase(AbstractBaseUser, PermissionsMixin):
+    UserName = models.CharField(max_length=85, unique=True)
+    FName = models.CharField(max_length=75)
+    LName = models.CharField(max_length=75)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+
+    USERNAME_FIELD = "UserName"
+    REQUIRED_FIELDS = ["FName", "LName"]
+    objects = CustomUserManager()
+
+    groups = models.ManyToManyField(
+        Group,
+        related_name="custom_user_set",  # unique related_name to avoid clashes
+        blank=True,
+        help_text="The groups this user belongs to.",
+        verbose_name="groups",
+    )
+
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="custom_user_set",  # unique related_name to avoid clashes
+        blank=True,
+        help_text="Specific permissions for this user.",
+        verbose_name="user permissions",
+    )
