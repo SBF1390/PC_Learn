@@ -1,0 +1,168 @@
+:root {
+    /* رنگ‌های تم دارک */
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --link-color: #8ab4f8;
+    --border-color: #333;
+    --btn-bg: #333;
+    --btn-text: #e0e0e0;
+}
+
+[data-theme="light"] {
+    /* رنگ‌های تم لایت */
+    --bg-color: #f5f5f5;
+    --text-color: #222;
+    --primary-color: #6200ee;
+    --secondary-color: #018786;
+    --link-color: #1a73e8;
+    --border-color: #ccc;
+    --btn-bg: #ddd;
+    --btn-text: #222;
+}
+
+/* استایل کلی */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 1rem 2rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--primary-color);
+    margin-top: 1.5rem;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* استایل حرفه‌ای برای نمایش کد */
+pre,
+code {
+    direction: ltr !important;
+    text-align: left;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    background-color: var(--btn-bg);
+    color: var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+/* بلاک‌های کد چندخطی */
+pre {
+    padding: 1rem;
+    overflow-x: auto;
+    line-height: 1.7;
+    margin: 1.5rem 0;
+    white-space: pre;
+    scrollbar-color: var(--primary-color) transparent;
+}
+
+/* کدهای تک‌خطی داخل متن */
+code {
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* برای حالت تم لایت */
+[data-theme="light"] pre,
+[data-theme="light"] code {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+/* اسکرول بار زیبا برای کدها */
+pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+pre::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 8px;
+}
+
+
+/* دکمه تغییر تم */
+.theme-toggle-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-toggle-btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* کنتینر محتوا */
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* لیست‌ها */
+ul,
+ol {
+    margin-left: 1.5rem;
+}
+
+/* جدول */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+table,
+th,
+td {
+    border: 1px solid var(--border-color);
+}
+
+th,
+td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+th {
+    background-color: var(--border-color);
+    color: var(--primary-color);
+}
+
+/* ریسپانسیو */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+}
