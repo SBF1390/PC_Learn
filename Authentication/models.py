@@ -46,3 +46,6 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
         help_text="Specific permissions for this user.",
         verbose_name="user permissions",
     )
+
+    def __str__(self):
+        return self.UserName
