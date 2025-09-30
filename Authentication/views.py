@@ -1,19 +1,14 @@
-from django.shortcuts import render
-from drf_spectacular.utils import (
-    extend_schema,
-    inline_serializer,
-    OpenApiResponse,
-    OpenApiParameter,
-)
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
-from .models import *
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import *
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import generics
+from django.shortcuts import render
+from rest_framework import status
+from .serializers import *
+from .models import *
 
 
 class SignUpView(generics.CreateAPIView):
@@ -30,3 +25,21 @@ class SignUpView(generics.CreateAPIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainSerializer
+
+
+class LogOutView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            return Response(
+                {"message": "خروج موفقیت امیز بود."},
+                status=status.HTTP_205_RESET_CONTENT,
+            )
+        except Exception as e:
+            return Response(
+                {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+            )
