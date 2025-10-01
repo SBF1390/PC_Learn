@@ -4,8 +4,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.http import HttpResponse
 from rest_framework import generics
-from django.shortcuts import render
+from django.template import loader
 from rest_framework import status
 from .serializers import *
 from .models import *
@@ -43,3 +44,7 @@ class LogOutView(APIView):
             return Response(
                 {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+def Doc(request):
+    Template = loader.get_template("Docs/index.html")
+    return HttpResponse(Template.render())
