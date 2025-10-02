@@ -7,6 +7,6 @@ from django.dispatch import receiver
 class Blog(models.Model):
     name = models.CharField(max_length=100)
     author = models.CharField(max_length=100)
-    blog = models.TextField()
+    content = models.TextField()
     image = models.ImageField(null=True)
     date = models.DateField(default=date.today)
