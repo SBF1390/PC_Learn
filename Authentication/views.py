@@ -45,6 +45,7 @@ class LogOutView(APIView):
                 {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+
 def Doc(request):
     Template = loader.get_template("Docs/index.html")
     return HttpResponse(Template.render())
