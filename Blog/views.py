@@ -13,7 +13,7 @@ from rest_framework import viewsets
 
 # لیست و ایجاد بلاگ + فیلتر با query params
 class BlogGenericApiView(generics.ListCreateAPIView):
-    serializer_class = BlogSerializer
+    serializer_class = BlogSerializer 
 
     def get_queryset(self):
         queryset = Blog.objects.all()
