@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مستندات احراز هویت Django با JWT</title>
+    <link rel="stylesheet" href="{% static 'Auth/style.css' %}" />
+  </head>
+
+  <body>
+    <button class="theme-toggle-btn">تغییر تم</button>
+
+    <div class="container">
+      <h1>مستندات سیستم احراز هویت Django با JWT</h1>
+
+      <section>
+        <h2>1. مقدمه</h2>
+        <p>
+          این اپلیکیشن یک سیستم احراز هویت مبتنی بر <strong>JWT</strong> برای پروژه‌های Django فراهم می‌کند که با استفاده از <code>Django REST Framework</code> و کتابخانه <code>SimpleJWT</code> پیاده‌سازی شده است.
+        </p>
+        <p>هدف از این پروژه، فراهم کردن یک سیستم امن، سریع و قابل توسعه برای ثبت‌نام، ورود، خروج و مدیریت توکن کاربران می‌باشد.</p>
+        <p>استفاده از JWT باعث می‌شود تا اعتبارسنجی کاربران در سمت کلاینت بدون نیاز به ذخیره‌ی session در سرور انجام شود که مناسب برای APIهای REST است.</p>
+      </section>
+
+      <section>
+        <h2>2. آدرس‌های API</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>مسیر</th>
+              <th>متد</th>
+              <th>شرح عملکرد</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <code>/SignUp/</code>
+              </td>
+              <td>POST</td>
+              <td>ثبت‌نام کاربر جدید</td>
+            </tr>
+            <tr>
+              <td>
+                <code>/Login/</code>
+              </td>
+              <td>POST</td>
+              <td>ورود با دریافت توکن JWT (access + refresh)</td>
+            </tr>
+            <tr>
+              <td>
+                <code>/Login/refresh/</code>
+              </td>
+              <td>POST</td>
+              <td>دریافت توکن دسترسی جدید با توکن refresh</td>
+            </tr>
+            <tr>
+              <td>
+                <code>/LogOut/</code>
+              </td>
+              <td>POST</td>
+              <td>خروج کاربر (ابطال توکن refresh)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>3. نحوه استفاده از API</h2>
+
+        <h3>ثبت‌نام (SignUp)</h3>
+        <pre>
+          <code>
+            POST /SignUp/ Content-Type: application/json
+
+            { "UserName": "reza123", "FName": "رضا", "LName": "اکبری", "password": "RezaStrongPass123!" }
+          </code>
+        </pre>
+
+        <p>
+          <strong>پاسخ موفق:</strong>
+        </p>
+        <pre>
+          <code>{ "message": "ثبت نام موفق بود." }</code>
+        </pre>
+
+        <h3>ورود (Login)</h3>
+        <pre>
+          <code>
+            POST /Login/ Content-Type: application/json
+
+            { "UserName": "reza123", "password": "RezaStrongPass123!" }
+          </code>
+        </pre>
+
+        <p>
+          <strong>پاسخ موفق:</strong>
+        </p>
+        <pre>
+          <code>{ "refresh": "توکن رفرش...", "access": "توکن دسترسی..." }</code>
+        </pre>
+
+        <h3>رفرش توکن</h3>
+        <pre>
+          <code>
+            POST /Login/refresh/ Content-Type: application/json
+
+            { "refresh": "توکن رفرش قبلی" }
+          </code>
+        </pre>
+
+        <h3>خروج (LogOut)</h3>
+        <pre>
+          <code>
+            POST /LogOut/ Authorization: Bearer توکن دسترسی Content-Type: application/json
+
+            { "refresh": "توکن رفرش" }
+          </code>
+        </pre>
+
+        <p>
+          <strong>پاسخ موفق:</strong>
+        </p>
+        <pre>
+          <code>{ "message": "خروج موفقیت امیز بود." }</code>
+        </pre>
+
+        <p>
+          <strong>خطاهای احتمالی:</strong>
+        </p>
+        <ul>
+          <li>
+            توکن نامعتبر → <code>{"error": "Invalid token"}</code>
+          </li>
+          <li>
+            عدم ارسال توکن → <code>401 Unauthorized</code>
+          </li>
+          <li>
+            اطلاعات ورود اشتباه → <code>401 Unauthorized</code>
+          </li>
+        </ul>
+
+        <h3>ارسال توکن در هدر</h3>
+        <pre>
+          <code>Authorization: Bearer توکن_دسترسی</code>
+        </pre>
+      </section>
+
+      <section>
+        <h2>4. نکات امنیتی و تکمیلی</h2>
+        <ul>
+          <li>
+            از <code>JWTAuthentication</code> برای اعتبارسنجی توکن‌ها در تمام endpointهای محافظت‌شده استفاده شده است.
+          </li>
+          <li>
+            توکن‌ها حتماً باید از طریق هدر <code>Authorization</code> ارسال شوند.
+          </li>
+          <li>
+            استفاده از <strong>HTTPS</strong> الزامی‌ست تا اطلاعات حساس رمزنگاری شده ارسال شوند.
+          </li>
+          <li>
+            توکن‌های <code>access</code> عمر کوتاه دارند و باید به‌موقع با <code>refresh</code> جایگزین شوند.
+          </li>
+          <li>توکن refresh باید در سمت کلاینت به صورت امن ذخیره شود (مثلاً localStorage امن یا HttpOnly cookie).</li>
+          <li>می‌توان از امکانات اضافی مثل تایید ایمیل، فعال‌سازی MFA یا ثبت فعالیت‌های ورود استفاده کرد.</li>
+        </ul>
+      </section>
+    </div>
+
+    <script>
+      const toggleBtn = document.querySelector('.theme-toggle-btn')
+      const rootElement = document.documentElement
+      
+      if (localStorage.getItem('theme') === 'light') {
+        rootElement.setAttribute('data-theme', 'light')
+      }
+      
+      toggleBtn.addEventListener('click', () => {
+        if (rootElement.getAttribute('data-theme') === 'light') {
+          rootElement.removeAttribute('data-theme')
+          localStorage.setItem('theme', 'dark')
+        } else {
+          rootElement.setAttribute('data-theme', 'light')
+          localStorage.setItem('theme', 'light')
+        }
+      })
+    </script>
+  </body>
+</html>
