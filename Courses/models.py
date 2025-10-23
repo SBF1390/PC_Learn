@@ -1,12 +1,20 @@
 from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
 
 class Courses(models.Model):
-    image = models.ImageField()
     title = models.CharField(max_length=100)
-    author = models.CharField(max_length=100)
-    about = models.TextField(max_length=199)
-    is_done = models.BooleanField()
+    short_description = models.CharField(max_length=100)
+    description = models.TextField(max_length=199)
+    category_id = models.ManyToManyField(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="Category"
+    )
+    price = models.DecimalField(default=0)
+    is_published = models.BooleanField(default=False)
+    published_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"title: {self.title} / is_done: {self.is_done}"
